@@ -25,26 +25,19 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+This is a boilerplate pipeline 'data_enginner'
+generated using Kedro 0.17.4
+"""
 
-"""Project pipelines."""
-from typing import Dict
-
-from kedro.pipeline import Pipeline
-from .pipelines.data_science import pipeline as pip_ds
-from .pipelines.data_enginner import pipeline as pip_eng
+from sklearn.datasets import load_boston
+from sklearn.model_selection import train_test_split
 
 
-def register_pipelines() -> Dict[str, Pipeline]:
-    """Register the project's pipelines.
+def read_dataset():
+    return load_boston()
 
-    Returns:
-        A mapping from a pipeline name to a ``Pipeline`` object.
-    """
-    pipe_eng = pip_eng.create_pipeline()
-    pipe_ds = pip_ds.create_pipeline()
-    pipe_ds_predict = pip_ds.create_pipeline_predict()
 
-    return {"__default__": pipe_eng + pipe_ds + pipe_ds_predict,
-            "pipe_eng": pipe_eng,
-            "pipe_ds": pipe_ds,
-            "pipe_ds_predict": pipe_ds_predict}
+def split_dataset(data):
+    x_train, x_test, y_train, y_test = train_test_split(data['data'], data['target'], random_state=1)
+    return x_train, x_test, y_train, y_test

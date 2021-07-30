@@ -25,26 +25,33 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+This is a boilerplate pipeline 'data_science'
+generated using Kedro 0.17.4
+"""
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.linear_model import Ridge
+import logging as log
 
-"""Project pipelines."""
-from typing import Dict
 
-from kedro.pipeline import Pipeline
-from .pipelines.data_science import pipeline as pip_ds
-from .pipelines.data_enginner import pipeline as pip_eng
+def train_model(x_train, y_train):
+    pipe = Pipeline([
+                    ('scaler', StandardScaler()),
+                    ('reduce_dim', PCA()),
+                    ('regressor', Ridge())
+                    ])
+    pipe.fit(x_train, y_train)
+    return pipe
 
 
-def register_pipelines() -> Dict[str, Pipeline]:
-    """Register the project's pipelines.
+def predict_house_prices(pipe, x_test):
+    predict_prices = pipe.predict(x_test)
+    print("sextou")
+    return predict_prices
 
-    Returns:
-        A mapping from a pipeline name to a ``Pipeline`` object.
-    """
-    pipe_eng = pip_eng.create_pipeline()
-    pipe_ds = pip_ds.create_pipeline()
-    pipe_ds_predict = pip_ds.create_pipeline_predict()
 
-    return {"__default__": pipe_eng + pipe_ds + pipe_ds_predict,
-            "pipe_eng": pipe_eng,
-            "pipe_ds": pipe_ds,
-            "pipe_ds_predict": pipe_ds_predict}
+#score = predict_prices.score(x_test, y_test)
+#logger = log.getLogger(__name__)
+#logger.info("Model has test score of %.3f.", score)
